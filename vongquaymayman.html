@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Box Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: url('banner.png') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        /* Header */
+        header {
+            background-color: #000;
+            color: white;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo img {
+            height: 80px;
+            margin-left: 40px;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-menu a:hover {
+            background-color: #444;
+            border-radius: 5px;
+        }
+
+        /* Container with background image */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            /* Slightly transparent background */
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            /* Adding background blur effect */
+        }
+
+        h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-top: 20px;
+        }
+
+        .box {
+            width: 100px;
+            height: 100px;
+            background-color: #ffc107;
+            border: 2px solid #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .box.open {
+            cursor: default;
+            background-color: #4caf50;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* Popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            padding: 20px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .popup img {
+            width: 50px;
+            margin-bottom: 15px;
+        }
+
+        .popup p {
+            font-size: 1rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .popup button {
+            padding: 10px 20px;
+            background-color: #ffc107;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .popup button:hover {
+            background-color: #e0a800;
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active,
+        .popup.active {
+            display: block;
+        }
+
+        /* Contact Buttons */
+        /* Contact Buttons */
+.contact-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.contact-buttons a {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: white; /* Nền trắng */
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contact-buttons img {
+    width: 70%; /* Điều chỉnh kích thước icon */
+    height: 70%;
+    margin: 15%;
+    object-fit: contain;
+}
+
+.contact-buttons a:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+    </style>
+
+</head>
+<header>
+    <div class="navbar">
+        <div class="navbar-logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <div class="navbar-menu">
+            <a href="https://facebook.com/hisacloset" target="_blank">Trang chủ</a>
+            <a href="#" id="aboutUs">Về Chúng Tôi</a>
+            <a href="#" id="aboutUs">Liên Hệ</a>
+            <a href="vongquaymayman.html">Vòng Quay May Mắn</a>
+        </div>
+    </div>
+</header>
+
+<!-- Popup for "Về Chúng Tôi" -->
+<div class="overlay" id="aboutUsOverlay"></div>
+<div class="popup" id="aboutUsPopup">
+    <p>Nội dung đang được cập nhật.</p>
+    <button onclick="closeAboutUsPopup()">Đóng</button>
+</div>
+
+<script>
+    // Sự kiện click cho "Về Chúng Tôi"
+    document.getElementById("aboutUs").addEventListener("click", function (e) {
+        e.preventDefault(); // Ngăn điều hướng mặc định
+        document.getElementById("aboutUsOverlay").classList.add("active");
+        document.getElementById("aboutUsPopup").classList.add("active");
+    });
+
+    // Hàm đóng popup "Về Chúng Tôi"
+    function closeAboutUsPopup() {
+        document.getElementById("aboutUsOverlay").classList.remove("active");
+        document.getElementById("aboutUsPopup").classList.remove("active");
+    }
+
+</script>
+<!-- Contact Buttons -->
+<!-- Contact Buttons -->
+<div class="contact-buttons">
+    <a href="https://facebook.com/hisacloset" target="_blank">
+        <img src="facebook.svg" alt="Facebook">
+    </a>
+    <a href="https://www.instagram.com/hisa.closet/" target="_blank">
+        <img src="ig.svg" alt="Instagram">
+    </a>
+    <a href="https://www.tiktok.com/@sasa.1m5?_t=8sMvuwJLpxg&_r=1" target="_blank">
+        <img src="tiktok.svg" alt="TikTok">
+    </a>
+</div>
+
+
+<body>
+
+    <!-- Gift Box Game -->
+    <h1>Hộp Quà May Mắn</h1>
+    <div class="container" id="giftContainer"></div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <img id="popupIcon" src="" alt="Icon">
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">Đóng</button>
+    </div>
+
+    <script>
+        const winningBoxes = [2, 4, 6, 8, 9, 10];
+        const container = document.getElementById("giftContainer");
+        const popup = document.getElementById("popup");
+        const overlay = document.getElementById("overlay");
+        const popupIcon = document.getElementById("popupIcon");
+        const popupMessage = document.getElementById("popupMessage");
+
+        for (let i = 1; i <= 12; i++) {
+            const box = document.createElement("div");
+            box.classList.add("box", "closed");
+
+            // Thay thế nội dung bằng hình ảnh
+            const img = document.createElement("img");
+            img.src = "hopqua.png"; // Đường dẫn tới hình ảnh hộp quà
+            img.alt = `Hộp quà ${i}`;
+            img.style.width = "80%"; // Điều chỉnh kích thước hình ảnh
+            box.appendChild(img);
+
+            box.addEventListener("click", function () {
+                if (box.classList.contains("open")) return;
+                box.classList.remove("closed");
+                box.classList.add("open");
+                overlay.classList.add("active");
+                popup.classList.add("active");
+
+                // Thay đổi hình ảnh sang hopquamo.png khi hộp được mở
+                img.src = "hopquamo.png";
+
+                if (winningBoxes.includes(i)) {
+                    popupIcon.src = "chucmung.png"; // Đường dẫn tới hình ảnh chúc mừng
+                    popupMessage.textContent = "Chúc mừng bạn đã trúng thưởng 1 box baby three!";
+                } else {
+                    popupIcon.src = "chiabuon.png"; // Đường dẫn tới hình ảnh chia buồn
+                    popupMessage.textContent = "Chúc bạn may mắn lần sau! Hãy cố gắng đạt chỉ tiêu cao hơn để được quay thưởng nhé.";
+                }
+            });
+
+
+            container.appendChild(box);
+        }
+
+
+        function closePopup() {
+            overlay.classList.remove("active");
+            popup.classList.remove("active");
+        }
+    </script>
+</body>
+
+</html>
